@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minHeight="208dp"
+    tools:context="org.farriswheel.glovecontrol.MainActivity">
+
+    <com.madrapps.pikolo.HSLColorPicker
+        android:id="@+id/colorWheel"
+        android:layout_width="372dp"
+        android:layout_height="366dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/padControlLayout"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/padControlLayout"
+        android:layout_width="553dp"
+        android:layout_height="229dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/redButton"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/red_button_text"
+                    android:textColor="@color/red_button_color"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="197dp" />
+
+                <Button
+                    android:id="@+id/greenButton"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:buttonStyle="@style/Base.Widget.AppCompat.Button.Borderless"
+                    android:text="@string/green_button_text"
+                    android:textColor="@color/green_button_color"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="256dp" />
+
+                <Button
+                    android:id="@+id/blueButton"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:buttonStyle="@style/Base.Widget.AppCompat.Button.Borderless"
+                    android:text="@string/blue_button_text"
+                    android:textColor="@color/blue_button_color"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="256dp" />
+
+                <Button
+                    android:id="@+id/offButton"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:buttonStyle="@style/Base.Widget.AppCompat.Button.Borderless"
+                    android:text="@string/off_button_text"
+                    android:textColor="@color/off_button_color"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="256dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/customButton1"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/custom_button"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="197dp" />
+
+                <Button
+                    android:id="@+id/customButton2"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:buttonStyle="@style/Base.Widget.AppCompat.Button.Borderless"
+                    android:text="@string/custom_button"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="256dp" />
+
+                <Button
+                    android:id="@+id/customButton3"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:buttonStyle="@style/Base.Widget.AppCompat.Button.Borderless"
+                    android:text="@string/custom_button"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="256dp" />
+
+                <!-- -->
+                <Button
+                    android:id="@+id/customButton4"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:buttonStyle="@style/Base.Widget.AppCompat.Button.Borderless"
+                    android:text="@string/custom_button"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="256dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/loopDelayLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/cycleSpeedLayout"
+        app:layout_constraintEnd_toStartOf="@+id/colorWheel"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:layout_width="94dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+
+            android:text="@string/loop_delay_text" />
+
+        <SeekBar
+            android:id="@+id/loopDelayBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+
+            android:max="20" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/cycleSpeedLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/colorWheel"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:layout_width="94dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/cycle_speed_text" />
+
+        <SeekBar
+            android:id="@+id/cycleJumpBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+
+            android:max="20" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/byteFromBt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+
+            android:layout_weight="1"
+            android:text="@string/no_data_string"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+            tools:layout_editor_absoluteX="163dp" />
+
+        <Button
+            android:id="@+id/viewPairedDevicesButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/pair_button_text" />
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/light_mode_toggle_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/loopDelayLayout"
+        app:layout_constraintEnd_toStartOf="@+id/colorWheel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/padControlLayout">
+
+        <RadioButton
+            android:id="@+id/single_random_radio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/single_random" />
+
+        <RadioButton
+            android:id="@+id/all_same_radio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:text="@string/all_lights" />
+
+    </RadioGroup>
+
+</android.support.constraint.ConstraintLayout>
