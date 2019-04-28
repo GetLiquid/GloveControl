@@ -1,17 +1,18 @@
 <resources>
     <string name="app_name">GloveControl</string>
-    <string name="loop_delay_text">Loop Delay</string>
+    <string name="glove_index_text">Finger Index</string>
     <string name="cycle_speed_text">Cycle Speed</string>
     <string name="red_button_text">Red</string>
     <string name="green_button_text">Green</string>
     <string name="blue_button_text">Blue</string>
     <string name="off_button_text">Off</string>
-    <string name="paired_devices_text">Paired Devices</string>
+    <string name="paired_devices_text">Previously Paired Devices</string>
     <string name="pair_button_text">Pair a Device</string>
     <string name="no_data_string">No data from glove</string>
     <string name="custom_button">Custom</string>
-    <string name="single_random">Single Random</string>
+    <string name="single_color">Single Color</string>
     <string name="all_lights">All Same Color</string>
     <string name="rainbow_cycle">Rainbow</string>
     <string name="single_color_cycle">Single Color</string>
+    <string name="currently_paired_devices_text">Currently Paired Devices</string>
 </resources>

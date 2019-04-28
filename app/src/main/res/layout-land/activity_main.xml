@@ -162,7 +162,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
 
-            android:text="@string/loop_delay_text" />
+            android:text="@string/glove_index_text" />
 
         <SeekBar
             android:id="@+id/loopDelayBar"
@@ -249,7 +249,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/single_random" />
+            android:text="@string/single_color" />
 
         <RadioButton
             android:id="@+id/all_same_radio"

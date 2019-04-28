@@ -19,11 +19,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-/**
- * Created by will on 7/20/18.
- */
-
 public class BluetoothConnectedThread extends Thread {
+
     private final String TAG = "BLUETOOTHCONNECT";
     private final BluetoothSocket mmSocket;
     private final BluetoothDevice mmDevice;
@@ -36,11 +33,12 @@ public class BluetoothConnectedThread extends Thread {
     private byte[] mmBuffer;
     private byte[] writeBuffer;
 
-    public BluetoothConnectedThread(BluetoothDevice device, Context context) { //BluetoothSocket socket) {
+    public BluetoothConnectedThread(BluetoothDevice device, Context context)
+    {
 
-        mContext = context;
-        mmDevice = device;
-        mmBuffer = new byte[8];
+        mContext = context;      //context
+        mmDevice = device;       //bluetooth device connected
+        mmBuffer = new byte[8];  //8-byte buffer of serial data from the device
 
         BluetoothSocket tmp = null;
         ParcelUuid [] uuidArray = mmDevice.getUuids();
@@ -51,12 +49,11 @@ public class BluetoothConnectedThread extends Thread {
             tmp = mmDevice.createRfcommSocketToServiceRecord(use);
         } catch(IOException e)
         {
-
+            Log.e(TAG, "Error getting uuid");
         }
 
-        mmAdapter = BluetoothAdapter.getDefaultAdapter();
+        mmAdapter = BluetoothAdapter.getDefaultAdapter(); //use default (built in) bluetooth device
         mmSocket = tmp;
-
 
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
@@ -94,22 +91,8 @@ public class BluetoothConnectedThread extends Thread {
         } catch (IOException connectException) {
             try {
                 mmSocket.close();
+
             } catch (IOException closeException) {
-            }
-        }
-
-    }
-
-
-    public void writeAfterResponse(byte [] bytesOut)
-    {
-        if(bytesOut != null) {
-            try {
-                int numBytes = mmInStream.read(mmBuffer);
-                if (mmBuffer[0] == (byte) 0x0F) {
-                    mmOutStream.write(bytesOut);
-                }
-            } catch (IOException e2) {
             }
         }
 
@@ -120,23 +103,11 @@ public class BluetoothConnectedThread extends Thread {
             if(bytesOut != null)
             {
                 mmOutStream.write(bytesOut);
-                Log.d(TAG, "Sending " + bytesToHex(bytesOut));
             }
 
         } catch (IOException e) {
            Log.e(TAG, "Output Stream disconnect", e);
         }
-   }
-
-    public String bytesToHex(byte[] bytes) {
-       char[] hexArray = "0123456789ABCDEF".toCharArray();
-       char[] hexChars = new char[bytes.length * 2];
-       for (int j = 0; j < bytes.length; j++) {
-           int v = bytes[j] & 0xFF;
-           hexChars[j * 2] = hexArray[v >>> 4];
-           hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-       }
-       return new String(hexChars);
    }
 
     public void cancel() {
