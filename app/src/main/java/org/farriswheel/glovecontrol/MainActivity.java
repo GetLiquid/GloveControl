@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.madrapps.pikolo.HSLColorPicker;
 import com.madrapps.pikolo.listeners.OnColorSelectionListener;
+import com.larswerkman.holocolorpicker.ColorPicker;
 
 import java.util.Random;
 
@@ -26,8 +27,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
 
     protected BluetoothAdapter mBluetoothAdapter;        //Set to the default adapter during onCreate()
     protected BluetoothConnectedThread connectedThread;  //Bluetooth connection is handled in this class, which runs in a separate thread
-    protected BluetoothConnectedThread leftConnection;
-    protected BluetoothConnectedThread rightConnection;
+
 
     //Defines the UI elements described in activity_main.xml
     protected TextView fromGlove;
@@ -35,8 +35,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
     protected SeekBar fingerIndex;
     protected BroadcastReceiver mReceiver;
     protected Button randomButton;
+    protected Button resetSingleButton;
 
-    protected HSLColorPicker colorWheel;
+    protected ColorPicker colorWheel;
 
     protected final int REQUEST_FOR_BT_ADDRESS = 104;
 
@@ -46,7 +47,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
     protected final byte NUMPIXELS = 5;
 
     private Random rand;
-    byte rainbowIndex = 0;
+
+    private byte [] rainbowLayer;
+    private byte [] singleLayer;
 
     private byte [] dataToGlove;
 
@@ -55,6 +58,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        rainbowLayer = new byte[BUFFERSIZE];
+        singleLayer = new byte[BUFFERSIZE];
         dataToGlove = new byte[BUFFERSIZE];
 
 
@@ -77,28 +82,34 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
             @Override
             public void onReceive(Context context, Intent intent) {
                 byte [] buff = intent.getByteArrayExtra("bytesFromGlove");
-               //fromGlove.setText("Result from glove: " + String.valueOf(buff[0]));
+                //fromGlove.setText("Result from glove: " + String.valueOf(buff[0]));
             }
         };
 
-        colorWheel = (HSLColorPicker) findViewById(R.id.colorWheel);
+        colorWheel = (ColorPicker) findViewById(R.id.colorWheel);
+        colorWheel.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
+            @Override
+            public void onColorChanged(int color) {
+                for(int i=0;i<NUMPIXELS;++i)
+                {
+                    rainbowLayer[i*3]       = (byte) ((color >> 16) & 0xFF);
+                    rainbowLayer[(i*3)+1]   = (byte) ((color >> 8)  & 0xFF);
+                    rainbowLayer[(i*3)+2]   = (byte) (color         & 0xFF);
+                }
+                sendDataToGlove();
+            }
+        });
+        /*colorWheel = (HSLColorPicker) findViewById(R.id.colorWheel);
         colorWheel.setColorSelectionListener(new OnColorSelectionListener() {
             @Override
             public void onColorSelected(int color) {
-                /* if(fingerIndex.getProgress() == 5)
-                {
-                    sendDataToGlove(SET_RGB_ALL, (i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF, 0, 0);
-                } else
-                    sendDataToGlove(SET_RGB_SINGLE, (i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF, fingerIndex.getProgress(), 0);
-                    */
                 for(int i=0;i<NUMPIXELS;++i)
                 {
-                    dataToGlove[i*3]       = (byte) ((color >> 16) & 0xFF);
-                    dataToGlove[(i*3)+1]   = (byte) ((color >> 8)  & 0xFF);
-                    dataToGlove[(i*3)+2]   = (byte) (color         & 0xFF);
+                    rainbowLayer[i*3]       = (byte) ((color >> 16) & 0xFF);
+                    rainbowLayer[(i*3)+1]   = (byte) ((color >> 8)  & 0xFF);
+                    rainbowLayer[(i*3)+2]   = (byte) (color         & 0xFF);
                 }
-                sendDataToGlove(color);
-
+                sendDataToGlove();
             }
 
 
@@ -112,8 +123,14 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
                 //sendDataToGlove(SET_RGB, (i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF, fingerIndex.getProgress(),0);
 
             }
-        });
+        });*/
 
+
+
+        randomButton = (Button) findViewById(R.id.random_single_button);
+        randomButton.setOnClickListener(this);
+        resetSingleButton = (Button) findViewById(R.id.single_reset_button);
+        resetSingleButton.setOnClickListener(this);
 
 
         //register a receiver from the BluetoothConnectionThread to pick up any data coming from the gloves
@@ -125,23 +142,17 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
     }
 
 
-    /*protected void sendDataToGlove(byte messageCode, int data1, int data2, int data3, int data4, int data5)
+    protected void sendDataToGlove()
     {
-        byte [] toGlove = {START_CODE, messageCode, (byte) data1, (byte) data2, (byte) data3, (byte) data4, (byte) data5, END_CODE};
-        Intent fromGloveIntent = new Intent("outgoingToGlove");
-        fromGloveIntent.putExtra("bytesToGlove", toGlove);
-        LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(fromGloveIntent);
-    }*/
-
-    protected void sendDataToGlove(int color)
-    {
-        //int color = colorWheel.getSolidColor();
-
-        //dataToGlove[0] = 127;
-        //dataToGlove[1] = 127;
-        //dataToGlove[2] = 127;
-
         dataToGlove[BUFFERSIZE-1] = SET_RGB_ALL;
+        for(int i=0;i<BUFFERSIZE-1;++i)
+        {
+            //dataToGlove[i] = (byte) (rainbowLayer[i] + singleLayer[i]);
+            if(singleLayer[i] == 0)
+                dataToGlove[i] = rainbowLayer[i];
+            else
+                dataToGlove[i] = singleLayer[i];
+        }
 
         Intent sendBytesToGloveIntent = new Intent("outgoingToGlove");
         sendBytesToGloveIntent.putExtra("bytesToGlove", dataToGlove);
@@ -180,9 +191,18 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
                 break;
             case R.id.viewPairedDevicesButton: openConnectionMenu();
                 break;
-            case R.id.send_rainbow:
-                //sendDataToGlove(SET_RAINDOW, rainbowIndex, 0, 0, 0, 0);
-                ++rainbowIndex;
+            case R.id.random_single_button:
+                int index = rand.nextInt(5);
+                singleLayer[index*3] = (byte) rand.nextInt(256);
+                singleLayer[index*3+1] = (byte) rand.nextInt(256);
+                singleLayer[index*3+2] = (byte) rand.nextInt(256);
+                sendDataToGlove();
+                break;
+            case R.id.single_reset_button:
+                for(int i=0;i<BUFFERSIZE-1;++i)
+                {
+                    singleLayer[i] = 0;
+                }
             default:
                 break;
 

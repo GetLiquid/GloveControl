@@ -27,5 +27,6 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:support-v4:27.1.1'
     compile 'com.github.madrapps:pikolo:1.1.6'
+    compile 'com.larswerkman:HoloColorPicker:1.5'
     testCompile 'junit:junit:4.12'
 }
