@@ -41,7 +41,7 @@ public class BluetoothConnectedThread extends Thread {
 
         mContext = context;      //context
         mmDevice = device;       //bluetooth device connected
-        mmBuffer = new byte[1];  //buffer of serial data from the device
+        mmBuffer = new byte[15];  //buffer of serial data from the device
 
         BluetoothSocket tmp = null;
         ParcelUuid [] uuidArray = mmDevice.getUuids();
@@ -101,23 +101,30 @@ public class BluetoothConnectedThread extends Thread {
                 }
             }
         }
-        try {
-            if (mmBuffer != null) {
-                mmInStream.read(mmBuffer);
-                Log.d(TAG, bytesToHexString(mmBuffer));
-            }
-        } catch (IOException e)
+        /*while(true)
         {
-            Log.e(TAG, "Diconnect", e);
-        }
+            try {
+                if (mmBuffer != null) {
+                    mmInStream.read(mmBuffer);
+                    Log.d(TAG, "Received: " + bytesToHexString(mmBuffer));
+                }
+            } catch (IOException e)
+            {
+                Log.e(TAG, "Diconnect", e);
+            }
+        }*/
 
     }
 
     public void write(byte[] bytesOut) {
+        byte [] buf = new byte[2];
         try {
             if(bytesOut != null)
             {
+                while(buf[0] != 0xFF && buf[1] != 0xCC)
+                    mmInStream.read(buf);
                 mmOutStream.write(bytesOut);
+                Log.d(TAG, "Received: " + bytesToHexString(buf) + "\nSent: " + bytesToHexString(bytesOut));
             }
 
         } catch (IOException e) {

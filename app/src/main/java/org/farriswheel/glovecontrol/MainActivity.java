@@ -43,13 +43,13 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
 
     protected final byte SET_RGB_ALL     = (byte) 0x0A;
 
-    protected final byte BUFFERSIZE = 16;
+    protected final byte BUFFERSIZE = 15;
     protected final byte NUMPIXELS = 5;
 
     private Random rand;
 
-    private byte [] rainbowLayer;
-    private byte [] singleLayer;
+    //private byte [] rainbowLayer;
+    //private byte [] singleLayer;
 
     private byte [] dataToGlove;
 
@@ -58,8 +58,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        rainbowLayer = new byte[BUFFERSIZE];
-        singleLayer = new byte[BUFFERSIZE];
+        //rainbowLayer = new byte[BUFFERSIZE];
+        //singleLayer = new byte[BUFFERSIZE];
         dataToGlove = new byte[BUFFERSIZE];
 
 
@@ -92,9 +92,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
             public void onColorChanged(int color) {
                 for(int i=0;i<NUMPIXELS;++i)
                 {
-                    rainbowLayer[i*3]       = (byte) ((color >> 16) & 0xFF);
-                    rainbowLayer[(i*3)+1]   = (byte) ((color >> 8)  & 0xFF);
-                    rainbowLayer[(i*3)+2]   = (byte) (color         & 0xFF);
+                    dataToGlove[i*3]       = (byte) ((color >> 16) & 0xFF);
+                    dataToGlove[(i*3)+1]   = (byte) ((color >> 8)  & 0xFF);
+                    dataToGlove[(i*3)+2]   = (byte) (color         & 0xFF);
                 }
                // connectedThread.write();
                 sendDataToGlove();
@@ -119,16 +119,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
 
     protected void sendDataToGlove()
     {
-        dataToGlove[BUFFERSIZE-1] = SET_RGB_ALL;
-        for(int i=0;i<BUFFERSIZE-1;++i)
-        {
-            //dataToGlove[i] = (byte) (rainbowLayer[i] + singleLayer[i]);
-            if(singleLayer[i] == 0)
-                dataToGlove[i] = rainbowLayer[i];
-            else
-                dataToGlove[i] = singleLayer[i];
-        }
-
+        //dataToGlove[BUFFERSIZE-1] = SET_RGB_ALL;
         Intent sendBytesToGloveIntent = new Intent("outgoingToGlove");
         sendBytesToGloveIntent.putExtra("bytesToGlove", dataToGlove);
         LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(sendBytesToGloveIntent);
@@ -169,16 +160,18 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
                 break;
             case R.id.random_single_button:
                 int index = rand.nextInt(5);
-                singleLayer[index*3] = (byte) rand.nextInt(256);
-                singleLayer[index*3+1] = (byte) rand.nextInt(256);
-                singleLayer[index*3+2] = (byte) rand.nextInt(256);
+                dataToGlove[(index*3)] = (byte) rand.nextInt(256);
+                dataToGlove[(index*3)+1] = (byte) rand.nextInt(256);
+                dataToGlove[(index*3)+2] = (byte) rand.nextInt(256);
                 sendDataToGlove();
                 break;
             case R.id.single_reset_button:
-                for(int i=0;i<BUFFERSIZE-1;++i)
+                for(int i=0;i<BUFFERSIZE;++i)
                 {
-                    singleLayer[i] = 0;
+                    dataToGlove[i] = 0;
                 }
+                sendDataToGlove();
+                break;
             default:
                 break;
 
