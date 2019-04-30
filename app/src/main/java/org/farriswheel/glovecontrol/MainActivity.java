@@ -96,35 +96,10 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
                     rainbowLayer[(i*3)+1]   = (byte) ((color >> 8)  & 0xFF);
                     rainbowLayer[(i*3)+2]   = (byte) (color         & 0xFF);
                 }
+               // connectedThread.write();
                 sendDataToGlove();
             }
         });
-        /*colorWheel = (HSLColorPicker) findViewById(R.id.colorWheel);
-        colorWheel.setColorSelectionListener(new OnColorSelectionListener() {
-            @Override
-            public void onColorSelected(int color) {
-                for(int i=0;i<NUMPIXELS;++i)
-                {
-                    rainbowLayer[i*3]       = (byte) ((color >> 16) & 0xFF);
-                    rainbowLayer[(i*3)+1]   = (byte) ((color >> 8)  & 0xFF);
-                    rainbowLayer[(i*3)+2]   = (byte) (color         & 0xFF);
-                }
-                sendDataToGlove();
-            }
-
-
-            @Override
-            public void onColorSelectionStart(int i) {
-                //sendDataToGlove(SET_RGB, (i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF, fingerIndex.getProgress(),0);
-            }
-
-            @Override
-            public void onColorSelectionEnd(int i) {
-                //sendDataToGlove(SET_RGB, (i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF, fingerIndex.getProgress(),0);
-
-            }
-        });*/
-
 
 
         randomButton = (Button) findViewById(R.id.random_single_button);
@@ -157,6 +132,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
         Intent sendBytesToGloveIntent = new Intent("outgoingToGlove");
         sendBytesToGloveIntent.putExtra("bytesToGlove", dataToGlove);
         LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(sendBytesToGloveIntent);
+        //connectedThread.write(dataToGlove);
 
     }
 

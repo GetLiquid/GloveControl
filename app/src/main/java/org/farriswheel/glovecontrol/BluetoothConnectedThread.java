@@ -17,6 +17,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.util.UUID;
 
 public class BluetoothConnectedThread extends Thread {
@@ -33,12 +34,14 @@ public class BluetoothConnectedThread extends Thread {
     private byte[] mmBuffer;
     private byte[] writeBuffer;
 
+    private final byte OK_SEND = 0x12;
+
     public BluetoothConnectedThread(BluetoothDevice device, Context context)
     {
 
         mContext = context;      //context
         mmDevice = device;       //bluetooth device connected
-        mmBuffer = new byte[8];  //8-byte buffer of serial data from the device
+        mmBuffer = new byte[1];  //buffer of serial data from the device
 
         BluetoothSocket tmp = null;
         ParcelUuid [] uuidArray = mmDevice.getUuids();
@@ -86,14 +89,26 @@ public class BluetoothConnectedThread extends Thread {
     {
         mmAdapter.cancelDiscovery();
 
-        try {
-            mmSocket.connect();
-        } catch (IOException connectException) {
+        if(!mmSocket.isConnected())
+        {
             try {
-                mmSocket.close();
+                mmSocket.connect();
+            } catch (IOException connectException) {
+                try {
+                    mmSocket.close();
 
-            } catch (IOException closeException) {
+                } catch (IOException closeException) {
+                }
             }
+        }
+        try {
+            if (mmBuffer != null) {
+                mmInStream.read(mmBuffer);
+                Log.d(TAG, bytesToHexString(mmBuffer));
+            }
+        } catch (IOException e)
+        {
+            Log.e(TAG, "Diconnect", e);
         }
 
     }
@@ -116,5 +131,14 @@ public class BluetoothConnectedThread extends Thread {
        } catch (IOException e) {
            Log.e(TAG, "COULDN'T CLOSE SOCKET", e);
        }
+   }
+
+   public String bytesToHexString(byte [] input)
+   {
+       StringBuilder sb = new StringBuilder();
+       for (byte b : input) {
+           sb.append(String.format("%02X ", b));
+       }
+       return sb.toString();
    }
 }
