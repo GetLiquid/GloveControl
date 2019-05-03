@@ -74,8 +74,8 @@
             android:layout_height="wrap_content"
 
             android:layout_weight="1"
-            android:min="0"
-            android:max="5" />
+            android:max="4"
+            android:min="0" />
 
     </LinearLayout>
 
@@ -108,23 +108,52 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/random_single_button"
+        android:id="@+id/set_color_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
-        android:text="@string/random_single_text"
+        android:layout_marginBottom="8dp"
+        android:text="@string/set_color_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/single_reset_button"
+        android:id="@+id/reset_all_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
-        android:text="@string/reset_single_text"
-        app:layout_constraintBottom_toTopOf="@+id/random_single_button"
+        android:layout_marginBottom="8dp"
+        android:text="@string/reset_all_text"
+        app:layout_constraintBottom_toTopOf="@+id/set_color_button"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/color_type_group"
+        android:layout_width="wrap_content"
+        android:layout_height="64dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:checkedButton="@id/color_type_all_button"
+        app:layout_constraintBottom_toBottomOf="@+id/set_color_button"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
+        app:layout_constraintStart_toEndOf="@+id/set_color_button"
+        app:layout_constraintTop_toBottomOf="@+id/colorWheel">
+
+        <RadioButton
+            android:id="@+id/color_type_all_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Set All" />
+
+        <RadioButton
+            android:id="@+id/colo_type_single_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Single Random" />
+
+    </RadioGroup>
 
 </android.support.constraint.ConstraintLayout>

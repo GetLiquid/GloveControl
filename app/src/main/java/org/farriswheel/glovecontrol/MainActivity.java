@@ -7,8 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -16,8 +16,6 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.madrapps.pikolo.HSLColorPicker;
-import com.madrapps.pikolo.listeners.OnColorSelectionListener;
 import com.larswerkman.holocolorpicker.ColorPicker;
 
 import java.util.Random;
@@ -37,6 +35,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
     protected Button randomButton;
     protected Button resetSingleButton;
 
+    protected RadioButton colorTypeSingle;
+    protected RadioButton colorTypeAll;
+
     protected ColorPicker colorWheel;
 
     protected final int REQUEST_FOR_BT_ADDRESS = 104;
@@ -47,11 +48,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
     protected final byte NUMPIXELS = 5;
 
     private Random rand;
-
-    //private byte [] rainbowLayer;
-    //private byte [] singleLayer;
-
     private byte [] dataToGlove;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +90,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
             public void onColorChanged(int color) {
                 for(int i=0;i<NUMPIXELS;++i)
                 {
-                    dataToGlove[i*3]       = (byte) ((color >> 16) & 0xFF);
+                    dataToGlove[(i*3)]     = (byte) ((color >> 16) & 0xFF);
                     dataToGlove[(i*3)+1]   = (byte) ((color >> 8)  & 0xFF);
                     dataToGlove[(i*3)+2]   = (byte) (color         & 0xFF);
                 }
@@ -102,10 +100,13 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
         });
 
 
-        randomButton = (Button) findViewById(R.id.random_single_button);
+        randomButton = (Button) findViewById(R.id.set_color_button);
         randomButton.setOnClickListener(this);
-        resetSingleButton = (Button) findViewById(R.id.single_reset_button);
+        resetSingleButton = (Button) findViewById(R.id.reset_all_button);
         resetSingleButton.setOnClickListener(this);
+
+        colorTypeSingle = (RadioButton) findViewById(R.id.colo_type_single_button);
+        colorTypeAll = (RadioButton) findViewById(R.id.color_type_all_button);
 
 
         //register a receiver from the BluetoothConnectionThread to pick up any data coming from the gloves
@@ -119,11 +120,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
 
     protected void sendDataToGlove()
     {
-        //dataToGlove[BUFFERSIZE-1] = SET_RGB_ALL;
-        Intent sendBytesToGloveIntent = new Intent("outgoingToGlove");
+        //dataToGlove[0] = (byte) 0xCF;
+        //dataToGlove[BUFFERSIZE-1] = (byte) 0xFC;
+        /*Intent sendBytesToGloveIntent = new Intent("outgoingToGlove");
         sendBytesToGloveIntent.putExtra("bytesToGlove", dataToGlove);
-        LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(sendBytesToGloveIntent);
-        //connectedThread.write(dataToGlove);
+        LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(sendBytesToGloveIntent);*/
+        connectedThread.write(dataToGlove);
 
     }
 
@@ -158,14 +160,30 @@ public class MainActivity extends Activity implements View.OnClickListener, Seek
                 break;
             case R.id.viewPairedDevicesButton: openConnectionMenu();
                 break;
-            case R.id.random_single_button:
-                int index = rand.nextInt(5);
-                dataToGlove[(index*3)] = (byte) rand.nextInt(256);
-                dataToGlove[(index*3)+1] = (byte) rand.nextInt(256);
-                dataToGlove[(index*3)+2] = (byte) rand.nextInt(256);
+            case R.id.set_color_button:
+
+                int color = colorWheel.getColor();
+                if(colorTypeSingle.isSelected()) {
+                    for (int i = 0; i < BUFFERSIZE; ++i) {
+                        dataToGlove[i] = 0;
+                    }
+
+                    int index = fingerIndex.getProgress();
+                    dataToGlove[(index * 3)] = (byte) ((color >> 16) & 0xFF);
+                    dataToGlove[(index * 3) + 1] = (byte) ((color >> 8) & 0xFF);
+                    dataToGlove[(index * 3) + 2] = (byte) (color & 0xFF);
+                } else
+                {
+                    for(int i=0;i<NUMPIXELS;++i)
+                    {
+                        dataToGlove[(i*3)]     = (byte) ((color >> 16) & 0xFF);
+                        dataToGlove[(i*3)+1]   = (byte) ((color >> 8)  & 0xFF);
+                        dataToGlove[(i*3)+2]   = (byte) (color         & 0xFF);
+                    }
+                }
                 sendDataToGlove();
                 break;
-            case R.id.single_reset_button:
+            case R.id.reset_all_button:
                 for(int i=0;i<BUFFERSIZE;++i)
                 {
                     dataToGlove[i] = 0;

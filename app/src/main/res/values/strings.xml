@@ -15,6 +15,6 @@
     <string name="rainbow_cycle">Rainbow</string>
     <string name="single_color_cycle">Single Color</string>
     <string name="currently_paired_devices_text">Currently Paired Devices</string>
-    <string name="random_single_text">Single Random</string>
-    <string name="reset_single_text">Reset Single LED</string>
+    <string name="set_color_text">Set Color</string>
+    <string name="reset_all_text">Reset LED</string>
 </resources>

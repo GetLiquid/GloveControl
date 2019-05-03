@@ -34,6 +34,9 @@ public class BluetoothConnectedThread extends Thread {
     private byte[] mmBuffer;
     private byte[] writeBuffer;
 
+
+    private long lastTime;
+
     private final byte OK_SEND = 0x12;
 
     public BluetoothConnectedThread(BluetoothDevice device, Context context)
@@ -76,6 +79,7 @@ public class BluetoothConnectedThread extends Thread {
         mmOutStream = tmpOut;
 
         LocalBroadcastManager.getInstance(mContext).registerReceiver(mReceiver, new IntentFilter("outgoingToGlove"));
+        lastTime = System.currentTimeMillis();
     }
 
     BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -101,35 +105,44 @@ public class BluetoothConnectedThread extends Thread {
                 }
             }
         }
-        /*while(true)
-        {
-            try {
-                if (mmBuffer != null) {
-                    mmInStream.read(mmBuffer);
-                    Log.d(TAG, "Received: " + bytesToHexString(mmBuffer));
-                }
-            } catch (IOException e)
-            {
-                Log.e(TAG, "Diconnect", e);
-            }
-        }*/
-
     }
 
     public void write(byte[] bytesOut) {
-        byte [] buf = new byte[2];
-        try {
-            if(bytesOut != null)
+        if(bytesOut != null)
+        {
+            for(byte i=0;i<5;++i)
             {
-                while(buf[0] != 0xFF && buf[1] != 0xCC)
-                    mmInStream.read(buf);
-                mmOutStream.write(bytesOut);
-                Log.d(TAG, "Received: " + bytesToHexString(buf) + "\nSent: " + bytesToHexString(bytesOut));
+                byte [] temp = new byte[8];
+                temp[0] = (byte) 0xCF;
+                temp[1] = bytesOut[i*3];
+                temp[2] = bytesOut[(i*3)+1];
+                temp[3] = bytesOut[(i*3)+2];
+                temp[4] = i;
+                temp[5] = (byte) 0xFC;
+                try {
+                    mmOutStream.write(temp);
+                } catch (IOException e) {}
+                try {
+                    this.sleep(0, 250);
+                } catch (Exception e) {}
+            }
+        }
+        /*try {
+            if(bytesOut != null) {
+                long newTime = System.currentTimeMillis();
+                if (newTime - lastTime > 100) {
+                    mmOutStream.write(bytesOut);
+                    Log.d(TAG, "Delta time was " + (newTime - lastTime) + ", Sent: " + bytesToHexString(bytesOut));
+                    lastTime = newTime;
+                } else
+                {
+                    Log.d(TAG, "Delta time was " + (newTime - lastTime) + " waiting a bit");
+                }
             }
 
         } catch (IOException e) {
            Log.e(TAG, "Output Stream disconnect", e);
-        }
+        }*/
    }
 
     public void cancel() {
